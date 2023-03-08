@@ -1,3 +1,3 @@
 # freecodecamp-backend-course
 
-Exercises corresponding to FreeCodeCamp "BakcEnd" course
+Exercises corresponding to FreeCodeCamp backend course
