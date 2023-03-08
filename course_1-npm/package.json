@@ -1,0 +1,23 @@
+{
+  "name": "fcc-learn-npm-package-json",
+  "author": "aragoncodes",
+  "description": "Project for FreeCodeCamp's Learn NPM Package JSON",
+  "version": "0.0.1",
+  "license": "MIT",
+  "keywords": [
+    "freecodecamp",
+    "course",
+    "npm"
+  ],
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://idontknow/todo.git"
+  },
+  "dependencies": {
+    "express": "^4.14.0"
+  }
+}
