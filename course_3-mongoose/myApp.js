@@ -27,7 +27,19 @@ const personSchema = new mongoose.Schema({
 const Person = mongoose.model(PERSON_COLLECTION_NAME, personSchema);
 
 const createAndSavePerson = (done) => {
-  done(null /*, data*/);
+  const newPerson = new Person({
+    name: 'Kevin Aragon',
+    age: 28,
+    favoriteFoods: ['sushi', 'lahmacun', 'pizza'],
+  });
+
+  newPerson.save((error, data) => {
+    if (error) {
+      done(error);
+    }
+
+    done(null, data);
+  });
 };
 
 const createManyPeople = (arrayOfPeople, done) => {
