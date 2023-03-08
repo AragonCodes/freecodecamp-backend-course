@@ -3,7 +3,6 @@ require('dotenv').config();
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
-const dns = require('dns');
 
 const urlDecoder = bodyParser.urlencoded({ extended: false });
 app.use(urlDecoder);
@@ -20,6 +19,14 @@ app.get('/', function (req, res) {
 // ==== solution ====
 const urlsDirectory = {};
 let currentUrlIndexId = 0;
+
+const isValidUrl = (urlString) => {
+  try {
+    return Boolean(new URL(urlString));
+  } catch (e) {
+    return false;
+  }
+};
 
 app
   .route('/api/shorturl/:shortUrlId?')
@@ -38,10 +45,7 @@ app
   .post(async (req, res) => {
     const url = req.body.url;
 
-    try {
-      // check if url is valid
-      await dns.lookup(url);
-    } catch {
+    if (!isValidUrl(url)) {
       res.json({ error: 'invalid url' });
       return;
     }
@@ -56,7 +60,7 @@ app
     res.json(newUrlEntry);
   });
 
-// ==== solution ====
+// ================================
 
 // listen for requests :)
 var listener = app.listen(process.env.PORT || 3000, function () {
