@@ -79,10 +79,19 @@ const findPersonById = async (personId, done) => {
   }
 };
 
-const findEditThenSave = (personId, done) => {
+const findEditThenSave = async (personId, done) => {
   const foodToAdd = 'hamburger';
 
-  done(null /*, data*/);
+  try {
+    const person = await Person.findById(personId);
+    person.favoriteFoods = [...person.favoriteFoods, foodToAdd];
+
+    await person.save();
+
+    done(null, person);
+  } catch (error) {
+    done(error);
+  }
 };
 
 const findAndUpdate = (personName, done) => {
