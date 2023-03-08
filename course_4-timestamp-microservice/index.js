@@ -29,7 +29,10 @@ app.get('/', function (_, res) {
 app.get('/api/:date?', function (req, res) {
   const dateParam = req.params.date;
 
-  const date = dateParam ? new Date(dateParam) : new Date();
+  const isUnixTimestamp = /^\d+$/.test(dateParam);
+  const parsedDateParam = isUnixTimestamp ? Number(dateParam) : dateParam;
+
+  const date = parsedDateParam ? new Date(parsedDateParam) : new Date();
 
   if (date.toString() === 'Invalid Date') {
     res.json({ error: 'Invalid Date' });
