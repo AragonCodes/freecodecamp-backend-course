@@ -104,7 +104,6 @@ const findAndUpdate = async (personName, done) => {
       { age: ageToSet },
       { new: true }
     );
-    console.log('findAndUpdate -> person:', person);
 
     done(null, person);
   } catch (error) {
@@ -112,8 +111,14 @@ const findAndUpdate = async (personName, done) => {
   }
 };
 
-const removeById = (personId, done) => {
-  done(null /*, data*/);
+const removeById = async (personId, done) => {
+  try {
+    const deletedPerson = await Person.findByIdAndDelete(personId);
+
+    done(null, deletedPerson);
+  } catch (error) {
+    done(error);
+  }
 };
 
 const removeManyPeople = (done) => {
