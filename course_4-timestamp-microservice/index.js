@@ -29,10 +29,10 @@ app.get('/', function (_, res) {
 app.get('/api/:date?', function (req, res) {
   const dateParam = req.params.date;
 
-  let date;
+  const date = dateParam ? new Date(dateParam) : new Date();
 
-  if (!dateParam) {
-    date = new Date();
+  if (date.toString() === 'Invalid Date') {
+    res.json({ error: 'Invalid Date' });
   }
 
   res.json({ utc: date.toUTCString(), unix: date.getTime() });
