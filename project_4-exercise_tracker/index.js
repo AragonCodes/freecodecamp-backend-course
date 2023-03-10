@@ -22,6 +22,31 @@ app.get('/', (req, res) => {
   res.sendFile(__dirname + '/views/index.html');
 });
 
+// ==== solution ====
+const userSchema = new mongoose.Schema({
+  username: {
+    type: String,
+    required: true,
+  },
+});
+const User = mongoose.model('User', userSchema);
+
+app.post('/api/users', async (req, res) => {
+  const { username } = req.body;
+
+  if (!username) {
+    res.json({ error: 'Empty username. Please provide a username' });
+    return;
+  }
+
+  const newUser = new User({ username });
+  const createdUser = await newUser.save();
+
+  res.json(createdUser);
+});
+
+// ==================
+
 const listener = app.listen(process.env.PORT || 3000, () => {
   console.log('Your app is listening on port ' + listener.address().port);
 });
