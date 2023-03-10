@@ -82,23 +82,24 @@ app.post('/api/users/:userId/exercises', async (req, res) => {
   const date = isValidDateParam(dateParam) ? new Date(dateParam) : new Date();
   const dateString = date.toDateString();
 
-  const newExercisePayload = {
+  const newExercise = new Exercise({
     description,
     duration,
     date: dateString,
-  };
-  const newExercise = new Exercise(newExercisePayload);
+  });
 
   const user = await User.findById(userId);
+  const userObject = user.toObject();
   user.log.push(newExercise);
 
   await user.save();
 
   const response = {
-    ...newExercisePayload,
+    ...newExercise.toObject(),
     username: user.username,
     _id: user._id,
   };
+  console.log('app.post -> response:', response);
 
   res.json(response);
 });
