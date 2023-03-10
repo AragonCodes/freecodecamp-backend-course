@@ -31,19 +31,26 @@ const userSchema = new mongoose.Schema({
 });
 const User = mongoose.model('User', userSchema);
 
-app.post('/api/users', async (req, res) => {
-  const { username } = req.body;
+app
+  .route('/api/users')
+  .post(async (req, res) => {
+    const { username } = req.body;
 
-  if (!username) {
-    res.json({ error: 'Empty username. Please provide a username' });
-    return;
-  }
+    if (!username) {
+      res.json({ error: 'Empty username. Please provide a username' });
+      return;
+    }
 
-  const newUser = new User({ username });
-  const createdUser = await newUser.save();
+    const newUser = new User({ username });
+    const createdUser = await newUser.save();
 
-  res.json(createdUser);
-});
+    res.json(createdUser);
+  })
+  .get(async (req, res) => {
+    const allUsers = await User.find();
+
+    res.json(allUsers);
+  });
 
 // ==================
 
