@@ -105,16 +105,32 @@ app.post('/api/users/:userId/exercises', async (req, res) => {
 });
 
 app.get('/api/users/:userId/logs', async (req, res) => {
+  const { fromParam, toParam, limit } = req.query;
+  const fromSinceEpoch = new Date(fromParam);
+  const toSinceEpoch = new Date(toParam);
+
   const { userId } = req.params;
 
   const user = await User.findById(userId).lean();
 
-  const logs = {
+  const logs = user.log
+    .filter((log) => {
+      const logDateSinceEpoch = new Date(log.date).getTime();
+
+      const passesFromParam = !fromParam || logDateSinceEpoch > fromSinceEpoch;
+      const passesToParam = !toParam || logDateSinceEpoch < toSinceEpoch;
+
+      return passesFromParam && passesToParam;
+    })
+    .slice(0, limit);
+
+  const response = {
     ...user,
-    count: user.log.length,
+    log: logs,
+    count: logs.length,
   };
 
-  res.json(logs);
+  res.json(response);
 });
 // ==================
 
