@@ -74,7 +74,7 @@ app
 
 const isValidDateParam = (dateString) => /^\d{4}-\d{2}-\d{2}$/.test(dateString);
 
-app.route('/api/users/:userId/exercises').post(async (req, res) => {
+app.post('/api/users/:userId/exercises', async (req, res) => {
   const { userId } = req.params;
   const { description, duration: durationParam, date: dateParam } = req.body;
 
@@ -101,6 +101,19 @@ app.route('/api/users/:userId/exercises').post(async (req, res) => {
   };
 
   res.json(response);
+});
+
+app.get('/api/users/:userId/logs', async (req, res) => {
+  const { userId } = req.params;
+
+  const user = await User.findById(userId).lean();
+
+  const logs = {
+    ...user,
+    count: user.log.length,
+  };
+
+  res.json(logs);
 });
 // ==================
 
