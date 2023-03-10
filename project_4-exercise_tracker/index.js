@@ -23,10 +23,30 @@ app.get('/', (req, res) => {
 });
 
 // ==== solution ====
+const exerciseSchema = new mongoose.Schema({
+  description: {
+    type: String,
+    required: true,
+  },
+  duration: {
+    type: Number,
+    required: true,
+  },
+  date: {
+    type: String,
+    required: true,
+  },
+});
+const Exercise = mongoose.model('Exercise', exerciseSchema);
+
 const userSchema = new mongoose.Schema({
   username: {
     type: String,
     required: true,
+  },
+  log: {
+    type: [exerciseSchema],
+    default: [],
   },
 });
 const User = mongoose.model('User', userSchema);
@@ -52,6 +72,36 @@ app
     res.json(allUsers);
   });
 
+const isValidDateParam = (dateString) => /^\d{4}-\d{2}-\d{2}$/.test(dateString);
+
+app.route('/api/users/:userId/exercises').post(async (req, res) => {
+  const { userId } = req.params;
+  const { description, duration: durationParam, date: dateParam } = req.body;
+
+  const duration = Number(durationParam);
+  const date = isValidDateParam(dateParam) ? new Date(dateParam) : new Date();
+  const dateString = date.toDateString();
+
+  const newExercisePayload = {
+    description,
+    duration,
+    date: dateString,
+  };
+  const newExercise = new Exercise(newExercisePayload);
+
+  const user = await User.findById(userId);
+  user.log.push(newExercise);
+
+  await user.save();
+
+  const response = {
+    ...newExercisePayload,
+    username: user.username,
+    _id: user._id,
+  };
+
+  res.json(response);
+});
 // ==================
 
 const listener = app.listen(process.env.PORT || 3000, () => {
