@@ -99,7 +99,6 @@ app.post('/api/users/:userId/exercises', async (req, res) => {
     username: user.username,
     _id: user._id,
   };
-  console.log('app.post -> response:', response);
 
   res.json(response);
 });
